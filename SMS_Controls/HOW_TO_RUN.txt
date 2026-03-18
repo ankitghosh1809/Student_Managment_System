@@ -1,0 +1,35 @@
+====================================================
+  STUDENT MANAGEMENT SYSTEM — HOW TO RUN
+====================================================
+
+REQUIREMENTS:
+  - Java JDK 11 or higher
+  - MySQL 8.x
+  - Apache Tomcat 10 (included in tomcat/ folder)
+
+----------------------------------------------------
+STEP 1 — IMPORT DATABASE
+----------------------------------------------------
+  mysql -u root -p < sms_db_backup.sql
+
+----------------------------------------------------
+STEP 2 — UPDATE DB PASSWORD
+----------------------------------------------------
+  Open: SMS/src/com/sms/util/DBConnection.java
+  Change: private static final String PASS = "your_password";
+
+----------------------------------------------------
+STEP 3 — START TOMCAT
+----------------------------------------------------
+  chmod +x tomcat/bin/*.sh
+  tomcat/bin/startup.sh
+
+----------------------------------------------------
+STEP 4 — OPEN IN BROWSER
+----------------------------------------------------
+  http://localhost:8080/SMS/LoginServlet
+
+  Username : admin
+  Password : admin123
+
+====================================================

@@ -1,0 +1,69 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Login — Student MS</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-page">
+<div class="login-bg-pattern"></div>
+<div class="login-card">
+  <div class="login-logo">
+    <div class="login-logo-icon">🎓</div>
+    <h1>Student MS</h1>
+    <p>Sign in to your admin panel</p>
+  </div>
+  <div id="serverAlert" style="display:none"></div>
+  <form id="loginForm" action="LoginServlet" method="POST" novalidate>
+    <div class="form-group">
+      <label class="form-label" for="username">Username</label>
+      <div class="input-icon-wrap">
+        <span class="ico">👤</span>
+        <input type="text" id="username" name="username" class="form-control"
+               placeholder="Enter username" autocomplete="username">
+      </div>
+      <span class="field-error" id="usernameErr">Username is required.</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="password">Password</label>
+      <div class="input-icon-wrap">
+        <span class="ico">🔒</span>
+        <input type="password" id="password" name="password" class="form-control"
+               placeholder="Enter password" autocomplete="current-password">
+      </div>
+      <span class="field-error" id="passwordErr">Password is required.</span>
+    </div>
+    <button type="submit" class="btn btn-primary btn-full" style="padding:12px;">
+      Sign In →
+    </button>
+  </form>
+  <div class="login-hint">
+    Default: <strong>admin</strong> / <strong>admin123</strong>
+  </div>
+</div>
+<script>
+  const p = new URLSearchParams(window.location.search);
+  const e = p.get('error');
+  if (e) {
+    const b = document.getElementById('serverAlert');
+    b.style.display = 'flex';
+    b.className = 'alert alert-danger';
+    b.innerHTML = '<span class="alert-icon">⚠️</span>' + decodeURIComponent(e.replace(/\+/g,' '));
+  }
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    let ok = true;
+    const u = document.getElementById('username');
+    const p = document.getElementById('password');
+    const uE = document.getElementById('usernameErr');
+    const pE = document.getElementById('passwordErr');
+    uE.classList.remove('show'); pE.classList.remove('show');
+    u.style.borderColor = ''; p.style.borderColor = '';
+    if (!u.value.trim()) { uE.classList.add('show'); u.style.borderColor='var(--danger)'; ok=false; }
+    if (!p.value.trim()) { pE.classList.add('show'); p.style.borderColor='var(--danger)'; ok=false; }
+    if (!ok) e.preventDefault();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+*.class
+*.log
+*.war
+.DS_Store
+/tomcat/
+catalina.out
+.idea/
+.vscode/
+*.iml

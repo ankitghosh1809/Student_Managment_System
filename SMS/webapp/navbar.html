@@ -1,0 +1,27 @@
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">🎓</div>
+    <div class="brand-text">Student MS <span>Management System</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a href="DashboardServlet"  class="nav-item"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="StudentServlet"    class="nav-item"><span class="nav-icon">👨‍🎓</span> Students</a>
+    <a href="SubjectServlet"    class="nav-item"><span class="nav-icon">📚</span> Subjects</a>
+    <a href="AttendanceServlet" class="nav-item"><span class="nav-icon">📋</span> Attendance</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="admin-info">
+      <div class="admin-avatar" id="adminInitial">A</div>
+      <div>
+        <div class="admin-name" id="adminNameDisplay">Administrator</div>
+        <div class="admin-role">Admin</div>
+      </div>
+    </div>
+    <a href="LogoutServlet" class="btn-logout">⬅ Logout</a>
+  </div>
+</aside>
+<div id="sidebarOverlay"
+     onclick="closeSidebar()"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199;">
+</div>

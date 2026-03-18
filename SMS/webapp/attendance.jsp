@@ -1,0 +1,171 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page isELIgnored="false" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Attendance — Student MS</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-layout">
+  <%@ include file="navbar.html" %>
+  <input type="hidden" id="smsAdminName" value="${adminName}">
+  <main class="main-content">
+    <button class="hamburger" onclick="openSidebar()">☰</button>
+    <div class="topbar">
+      <div class="page-title"><h1>Attendance</h1><p>Track and manage student attendance</p></div>
+    </div>
+    <div id="alertBox" style="display:none"></div>
+    <div class="split-layout">
+      <div class="card">
+        <div class="card-header"><h3>📝 Mark Attendance</h3></div>
+        <div class="card-body">
+          <form id="attForm" action="AttendanceServlet" method="POST" novalidate>
+            <div class="form-group">
+              <label class="form-label">Student <span class="required">*</span></label>
+              <select id="studentId" name="studentId" class="form-control">
+                <option value="">— Select Student —</option>
+              </select>
+              <span class="field-error" id="studentErr">Please select a student.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject <span class="required">*</span></label>
+              <select id="subjectId" name="subjectId" class="form-control">
+                <option value="">— Select Subject —</option>
+              </select>
+              <span class="field-error" id="subjectErr">Please select a subject.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date <span class="required">*</span></label>
+              <input type="date" id="date" name="date" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status <span class="required">*</span></label>
+              <div class="radio-row">
+                <label class="radio-opt opt-present">
+                  <input type="radio" name="status" value="Present" checked> ✅ Present
+                </label>
+                <label class="radio-opt opt-absent">
+                  <input type="radio" name="status" value="Absent"> ❌ Absent
+                </label>
+                <label class="radio-opt opt-late">
+                  <input type="radio" name="status" value="Late"> ⏰ Late
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">📋 Mark Attendance</button>
+          </form>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>📊 Attendance Statistics</h3></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Present</th><th>Total</th><th>%</th></tr></thead>
+            <tbody id="statsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3>Attendance Records</h3>
+        <form action="AttendanceServlet" method="GET" class="search-bar">
+          <label style="font-size:13px;color:var(--text-3)">Filter by date:</label>
+          <input type="date" name="date" class="form-control"
+                 style="width:auto" value="${filterDate}">
+          <button type="submit" class="btn btn-outline btn-sm">Filter</button>
+          <a href="AttendanceServlet" class="btn btn-outline btn-sm">✕ Clear</a>
+        </form>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Student</th><th>Subject</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="recordsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script id="studentsData" type="application/json">${studentsJson}</script>
+<script id="subjectsData" type="application/json">${subjectsJson}</script>
+<script id="statsData"    type="application/json">${attendanceStatsJson}</script>
+<script id="recordsData"  type="application/json">${attendanceJson}</script>
+<script src="js/app.js"></script>
+<script>
+  document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+  let students = [], subjects = [], stats = [], records = [];
+  try { students = JSON.parse(document.getElementById('studentsData').textContent || '[]'); } catch(e) {}
+  try { subjects = JSON.parse(document.getElementById('subjectsData').textContent || '[]'); } catch(e) {}
+  try { stats    = JSON.parse(document.getElementById('statsData').textContent    || '[]'); } catch(e) {}
+  try { records  = JSON.parse(document.getElementById('recordsData').textContent  || '[]'); } catch(e) {}
+
+  function populate(selId, data, labelFn) {
+    const sel = document.getElementById(selId);
+    data.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.id; opt.textContent = labelFn(d);
+      sel.appendChild(opt);
+    });
+  }
+  populate('studentId', students, s => `${s.name} — ${s.course}`);
+  populate('subjectId', subjects, s => `${s.name} (${s.code})`);
+
+  const sb = document.getElementById('statsBody');
+  if (!stats.length) {
+    sb.innerHTML = '<tr class="empty-row"><td colspan="4">No records yet.</td></tr>';
+  } else {
+    sb.innerHTML = stats.map(s => {
+      const pct = s.pct || 0;
+      const fc  = pct >= 75 ? 'fill-good' : pct >= 50 ? 'fill-warn' : 'fill-bad';
+      return `<tr>
+        <td><div class="cell-name">${s.name}</div></td>
+        <td>${s.present}</td><td>${s.total}</td>
+        <td><div class="pct-bar-wrap">
+          <div class="pct-bar-track">
+            <div class="pct-bar-fill ${fc}" style="width:${pct}%"></div>
+          </div>
+          <span class="pct-label">${pct}%</span>
+        </div></td>
+      </tr>`;
+    }).join('');
+  }
+
+  const rb = document.getElementById('recordsBody');
+  if (!records.length) {
+    rb.innerHTML = '<tr class="empty-row"><td colspan="4">No attendance records found.</td></tr>';
+  } else {
+    rb.innerHTML = records.map(r => {
+      const bc = r.status === 'Present' ? 'badge-success'
+               : r.status === 'Absent'  ? 'badge-danger' : 'badge-warn';
+      return `<tr>
+        <td><div class="avatar-cell">
+          <div class="avatar">${r.studentName.charAt(0)}</div>
+          <span class="fw-600 color-navy">${r.studentName}</span>
+        </div></td>
+        <td>
+          <div class="cell-name">${r.subjectName}</div>
+          <div class="cell-sub">${r.subjectCode}</div>
+        </td>
+        <td class="text-muted">${r.date}</td>
+        <td><span class="badge ${bc}">${r.status}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  document.getElementById('attForm').addEventListener('submit', function(e) {
+    let ok = true;
+    [['studentId','studentErr'],['subjectId','subjectErr']].forEach(([id, eid]) => {
+      const el = document.getElementById(id), err = document.getElementById(eid);
+      err.classList.remove('show'); el.style.borderColor = '';
+      if (!el.value) { err.classList.add('show'); el.style.borderColor='var(--danger)'; ok=false; }
+    });
+    if (!ok) e.preventDefault();
+  });
+</script>
+</body>
+</html>
