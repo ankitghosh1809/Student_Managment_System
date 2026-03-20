@@ -1,12 +1,9 @@
 package com.sms.dao;
-
 import com.sms.model.Student;
 import com.sms.util.DBConnection;
 import java.sql.*;
 import java.util.*;
-
 public class StudentDAO implements GenericDAO<Student> {
-
     @Override
     public List<Student> getAll() {
         List<Student> list = new ArrayList<>();
@@ -18,7 +15,6 @@ public class StudentDAO implements GenericDAO<Student> {
         } catch (SQLException e) { System.err.println("StudentDAO.getAll: " + e.getMessage()); }
         return list;
     }
-
     public List<Student> search(String q) {
         List<Student> list = new ArrayList<>();
         String sql = "SELECT * FROM student WHERE name LIKE ? OR email LIKE ? OR course LIKE ? ORDER BY name";
@@ -32,7 +28,6 @@ public class StudentDAO implements GenericDAO<Student> {
         } catch (SQLException e) { System.err.println("StudentDAO.search: " + e.getMessage()); }
         return list;
     }
-
     @Override
     public Student getById(int id) {
         String sql = "SELECT * FROM student WHERE id=?";
@@ -45,7 +40,6 @@ public class StudentDAO implements GenericDAO<Student> {
         } catch (SQLException e) { System.err.println("StudentDAO.getById: " + e.getMessage()); }
         return null;
     }
-
     public Student loginStudent(String rollNumber, String password) {
         String sql = "SELECT * FROM student WHERE rollNumber=? AND password=?";
         try (Connection c = DBConnection.getConnection();
@@ -58,7 +52,6 @@ public class StudentDAO implements GenericDAO<Student> {
         } catch (SQLException e) { System.err.println("StudentDAO.loginStudent: " + e.getMessage()); }
         return null;
     }
-
     @Override
     public boolean insert(Student s) {
         String sql = "INSERT INTO student (name,email,course,phone,address) VALUES (?,?,?,?,?)";
@@ -71,7 +64,6 @@ public class StudentDAO implements GenericDAO<Student> {
         } catch (SQLException e) { System.err.println("StudentDAO.insert: " + e.getMessage()); }
         return false;
     }
-
     @Override
     public boolean update(Student s) {
         String sql = "UPDATE student SET name=?,email=?,course=?,phone=?,address=? WHERE id=?";
@@ -84,7 +76,6 @@ public class StudentDAO implements GenericDAO<Student> {
         } catch (SQLException e) { System.err.println("StudentDAO.update: " + e.getMessage()); }
         return false;
     }
-
     @Override
     public boolean delete(int id) {
         String sql = "DELETE FROM student WHERE id=?";
@@ -95,7 +86,6 @@ public class StudentDAO implements GenericDAO<Student> {
         } catch (SQLException e) { System.err.println("StudentDAO.delete: " + e.getMessage()); }
         return false;
     }
-
     @Override
     public int count() {
         String sql = "SELECT COUNT(*) FROM student";
@@ -106,7 +96,6 @@ public class StudentDAO implements GenericDAO<Student> {
         } catch (SQLException e) { System.err.println("StudentDAO.count: " + e.getMessage()); }
         return 0;
     }
-
     private Student map(ResultSet rs) throws SQLException {
         Student s = new Student();
         s.setId(rs.getInt("id"));

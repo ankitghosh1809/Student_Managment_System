@@ -1,11 +1,8 @@
 package com.sms.dao;
-
 import com.sms.util.DBConnection;
 import java.sql.*;
 import java.util.*;
-
 public class MarksDAO {
-
     // Get all marks for a specific student
     public List<Map<String,Object>> getMarksByStudent(int studentId) {
         List<Map<String,Object>> list = new ArrayList<>();
@@ -39,7 +36,6 @@ public class MarksDAO {
         }
         return list;
     }
-
     // Get all marks for admin view (all students)
     public List<Map<String,Object>> getAllMarks() {
         List<Map<String,Object>> list = new ArrayList<>();
@@ -71,7 +67,6 @@ public class MarksDAO {
         }
         return list;
     }
-
     // Get summary per student (total, avg, overall grade)
     public List<Map<String,Object>> getStudentSummary() {
         List<Map<String,Object>> list = new ArrayList<>();
@@ -107,7 +102,6 @@ public class MarksDAO {
         }
         return list;
     }
-
     // Add or update marks
     public boolean saveMarks(int studentId, int subjectId,
                              int marks, int maxMarks, String examType) {
@@ -127,7 +121,6 @@ public class MarksDAO {
         }
         return false;
     }
-
     // Grade calculation logic
     public static String calculateGrade(int marks, int maxMarks) {
         if (maxMarks == 0) return "F";

@@ -1,5 +1,4 @@
 package com.sms.servlet;
-
 import com.sms.dao.AttendanceDAO;
 import com.sms.dao.MarksDAO;
 import com.sms.dao.SubjectDAO;
@@ -12,13 +11,11 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
 @WebServlet("/StudentDashboardServlet")
 public class StudentDashboardServlet extends HttpServlet {
     private final AttendanceDAO attendanceDAO = new AttendanceDAO();
     private final SubjectDAO    subjectDAO    = new SubjectDAO();
     private final MarksDAO      marksDAO      = new MarksDAO();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -27,7 +24,6 @@ public class StudentDashboardServlet extends HttpServlet {
             res.sendRedirect("StudentLoginServlet"); return;
         }
         Student student = (Student) session.getAttribute("student");
-
         // Attendance
         List<Attendance> records = attendanceDAO.getByStudent(student.getId());
         StringBuilder aJson = new StringBuilder("[");
@@ -40,7 +36,6 @@ public class StudentDashboardServlet extends HttpServlet {
                  .append("\"status\":\"").append(esc(a.getStatus())).append("\"}");
         }
         aJson.append("]");
-
         // Attendance stats
         List<Map<String, Object>> allStats = attendanceDAO.getPercentages();
         StringBuilder statsJson = new StringBuilder("[");
@@ -56,7 +51,6 @@ public class StudentDashboardServlet extends HttpServlet {
             }
         }
         statsJson.append("]");
-
         // Subjects
         List<Subject> subjects = subjectDAO.getAll();
         StringBuilder subJson = new StringBuilder("[");
@@ -68,7 +62,6 @@ public class StudentDashboardServlet extends HttpServlet {
                    .append("\"credits\":").append(s.getCredits()).append("}");
         }
         subJson.append("]");
-
         // Marks
         List<Map<String,Object>> marksList = marksDAO.getMarksByStudent(student.getId());
         StringBuilder mJson = new StringBuilder("[");
@@ -85,15 +78,13 @@ public class StudentDashboardServlet extends HttpServlet {
                  .append("}");
         }
         mJson.append("]");
-
-        req.setAttribute("student",        student);
+        req.setAttribute("student", student);
         req.setAttribute("attendanceJson", aJson.toString());
-        req.setAttribute("statsJson",      statsJson.toString());
-        req.setAttribute("subjectsJson",   subJson.toString());
-        req.setAttribute("marksJson",      mJson.toString());
+        req.setAttribute("statsJson", statsJson.toString());
+        req.setAttribute("subjectsJson", subJson.toString());
+        req.setAttribute("marksJson", mJson.toString());
         req.getRequestDispatcher("student-dashboard.jsp").forward(req, res);
     }
-
     private String esc(Object v) {
         if (v == null) return "";
         return v.toString().replace("\\","\\\\").replace("\"","\\\"");

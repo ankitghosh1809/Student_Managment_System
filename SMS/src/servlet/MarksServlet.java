@@ -1,5 +1,4 @@
 package com.sms.servlet;
-
 import com.sms.dao.MarksDAO;
 import com.sms.dao.StudentDAO;
 import com.sms.dao.SubjectDAO;
@@ -9,20 +8,17 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
 @WebServlet("/MarksServlet")
 public class MarksServlet extends HttpServlet {
     private final MarksDAO   marksDAO   = new MarksDAO();
     private final StudentDAO studentDAO = new StudentDAO();
     private final SubjectDAO subjectDAO = new SubjectDAO();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         if (!DashboardServlet.isLoggedIn(req)) {
             res.sendRedirect("login.jsp"); return;
         }
-
         // All marks
         List<Map<String,Object>> allMarks = marksDAO.getAllMarks();
         StringBuilder mJson = new StringBuilder("[");
@@ -43,7 +39,6 @@ public class MarksServlet extends HttpServlet {
                  .append("}");
         }
         mJson.append("]");
-
         // Student summary
         List<Map<String,Object>> summary = marksDAO.getStudentSummary();
         StringBuilder sJson = new StringBuilder("[");
@@ -63,7 +58,6 @@ public class MarksServlet extends HttpServlet {
                  .append("}");
         }
         sJson.append("]");
-
         // Students and subjects for add marks form
         req.setAttribute("marksJson",   mJson.toString());
         req.setAttribute("summaryJson", sJson.toString());
@@ -72,7 +66,6 @@ public class MarksServlet extends HttpServlet {
 
         req.getRequestDispatcher("marks.jsp").forward(req, res);
     }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -91,7 +84,6 @@ public class MarksServlet extends HttpServlet {
             res.sendRedirect("MarksServlet?error=Invalid+data");
         }
     }
-
     private String toStudentJson(StudentDAO dao) {
         StringBuilder sb = new StringBuilder("[");
         var list = dao.getAll();
@@ -104,7 +96,6 @@ public class MarksServlet extends HttpServlet {
         }
         return sb.append("]").toString();
     }
-
     private String toSubjectJson(SubjectDAO dao) {
         StringBuilder sb = new StringBuilder("[");
         var list = dao.getAll();
@@ -117,7 +108,6 @@ public class MarksServlet extends HttpServlet {
         }
         return sb.append("]").toString();
     }
-
     private String esc(Object v) {
         if (v == null) return "";
         return v.toString().replace("\\","\\\\").replace("\"","\\\"");

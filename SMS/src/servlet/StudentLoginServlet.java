@@ -1,16 +1,13 @@
 package com.sms.servlet;
-
 import com.sms.dao.StudentDAO;
 import com.sms.model.Student;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
-
 @WebServlet("/StudentLoginServlet")
 public class StudentLoginServlet extends HttpServlet {
     private final StudentDAO dao = new StudentDAO();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -20,18 +17,15 @@ public class StudentLoginServlet extends HttpServlet {
         }
         req.getRequestDispatcher("student-login.jsp").forward(req, res);
     }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         String rollNumber = req.getParameter("rollNumber") != null ? req.getParameter("rollNumber").trim() : "";
         String password   = req.getParameter("password")   != null ? req.getParameter("password").trim()   : "";
-
         if (rollNumber.isEmpty() || password.isEmpty()) {
             req.setAttribute("error", "Roll number and password are required.");
             req.getRequestDispatcher("student-login.jsp").forward(req, res); return;
         }
-
         Student student = dao.loginStudent(rollNumber, password);
         if (student != null) {
             HttpSession session = req.getSession();

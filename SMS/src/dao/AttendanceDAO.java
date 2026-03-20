@@ -1,35 +1,27 @@
 package com.sms.dao;
-
 import com.sms.model.Attendance;
 import com.sms.util.DBConnection;
 import java.sql.*;
 import java.util.*;
-
 public class AttendanceDAO implements GenericDAO<Attendance> {
-
     @FunctionalInterface
     interface ParamSetter { void set(PreparedStatement ps) throws SQLException; }
-
     private static final String JOIN =
         "SELECT a.*,s.name sn,sub.name subn,sub.code subc " +
         "FROM attendance a JOIN student s ON a.studentId=s.id " +
         "JOIN subject sub ON a.subjectId=sub.id ";
-
     @Override
     public List<Attendance> getAll() {
         return query(JOIN + "ORDER BY a.date DESC", null);
     }
-
     public List<Attendance> getByDate(java.sql.Date date) {
         return query(JOIN + "WHERE a.date=? ORDER BY s.name",
                      ps -> ps.setDate(1, date));
     }
-
     public List<Attendance> getByStudent(int studentId) {
         return query(JOIN + "WHERE a.studentId=? ORDER BY a.date DESC",
                      ps -> ps.setInt(1, studentId));
     }
-
     public boolean mark(Attendance a) {
         String sql = "INSERT INTO attendance (studentId,subjectId,date,status) VALUES (?,?,?,?) " +
                      "ON DUPLICATE KEY UPDATE status=VALUES(status)";
@@ -41,7 +33,6 @@ public class AttendanceDAO implements GenericDAO<Attendance> {
         } catch (SQLException e) { System.err.println("AttendanceDAO.mark: " + e.getMessage()); }
         return false;
     }
-
     public List<Map<String,Object>> getPercentages() {
         List<Map<String,Object>> result = new ArrayList<>();
         String sql = "SELECT s.id,s.name,COUNT(a.id) total," +
@@ -62,7 +53,6 @@ public class AttendanceDAO implements GenericDAO<Attendance> {
         } catch (SQLException e) { System.err.println("AttendanceDAO.getPercentages: " + e.getMessage()); }
         return result;
     }
-
     public int countTodayPresent() {
         String sql = "SELECT COUNT(*) FROM attendance WHERE date=CURDATE() AND status='Present'";
         try (Connection c = DBConnection.getConnection();
@@ -72,13 +62,11 @@ public class AttendanceDAO implements GenericDAO<Attendance> {
         } catch (SQLException e) { System.err.println("AttendanceDAO.countTodayPresent: " + e.getMessage()); }
         return 0;
     }
-
     @Override public Attendance getById(int id)      { return null; }
     @Override public boolean insert(Attendance a)    { return mark(a); }
     @Override public boolean update(Attendance a)    { return mark(a); }
     @Override public boolean delete(int id)          { return false; }
     @Override public int count()                     { return 0; }
-
     private List<Attendance> query(String sql, ParamSetter setter) {
         List<Attendance> list = new ArrayList<>();
         try (Connection c = DBConnection.getConnection();
@@ -90,7 +78,6 @@ public class AttendanceDAO implements GenericDAO<Attendance> {
         } catch (SQLException e) { System.err.println("AttendanceDAO.query: " + e.getMessage()); }
         return list;
     }
-
     private Attendance mapFull(ResultSet rs) throws SQLException {
         Attendance a = new Attendance();
         a.setId(rs.getInt("id")); a.setStudentId(rs.getInt("studentId"));

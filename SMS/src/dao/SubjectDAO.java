@@ -1,12 +1,9 @@
 package com.sms.dao;
-
 import com.sms.model.Subject;
 import com.sms.util.DBConnection;
 import java.sql.*;
 import java.util.*;
-
 public class SubjectDAO implements GenericDAO<Subject> {
-
     @Override
     public List<Subject> getAll() {
         List<Subject> list = new ArrayList<>();
@@ -18,7 +15,6 @@ public class SubjectDAO implements GenericDAO<Subject> {
         } catch (SQLException e) { System.err.println("SubjectDAO.getAll: " + e.getMessage()); }
         return list;
     }
-
     @Override
     public Subject getById(int id) {
         String sql = "SELECT * FROM subject WHERE id=?";
@@ -31,7 +27,6 @@ public class SubjectDAO implements GenericDAO<Subject> {
         } catch (SQLException e) { System.err.println("SubjectDAO.getById: " + e.getMessage()); }
         return null;
     }
-
     @Override
     public boolean insert(Subject s) {
         String sql = "INSERT INTO subject (name,code,credits,description) VALUES (?,?,?,?)";
@@ -43,7 +38,6 @@ public class SubjectDAO implements GenericDAO<Subject> {
         } catch (SQLException e) { System.err.println("SubjectDAO.insert: " + e.getMessage()); }
         return false;
     }
-
     @Override
     public boolean update(Subject s) {
         String sql = "UPDATE subject SET name=?,code=?,credits=?,description=? WHERE id=?";
@@ -56,7 +50,6 @@ public class SubjectDAO implements GenericDAO<Subject> {
         } catch (SQLException e) { System.err.println("SubjectDAO.update: " + e.getMessage()); }
         return false;
     }
-
     @Override
     public boolean delete(int id) {
         String sql = "DELETE FROM subject WHERE id=?";
@@ -67,7 +60,6 @@ public class SubjectDAO implements GenericDAO<Subject> {
         } catch (SQLException e) { System.err.println("SubjectDAO.delete: " + e.getMessage()); }
         return false;
     }
-
     @Override
     public int count() {
         String sql = "SELECT COUNT(*) FROM subject";
@@ -78,7 +70,6 @@ public class SubjectDAO implements GenericDAO<Subject> {
         } catch (SQLException e) { System.err.println("SubjectDAO.count: " + e.getMessage()); }
         return 0;
     }
-
     private Subject map(ResultSet rs) throws SQLException {
         Subject s = new Subject();
         s.setId(rs.getInt("id")); s.setName(rs.getString("name"));

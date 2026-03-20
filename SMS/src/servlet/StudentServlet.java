@@ -1,5 +1,4 @@
 package com.sms.servlet;
-
 import com.sms.dao.StudentDAO;
 import com.sms.model.Student;
 import jakarta.servlet.ServletException;
@@ -7,19 +6,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
-
 @WebServlet("/StudentServlet")
 public class StudentServlet extends HttpServlet {
     private final StudentDAO dao = new StudentDAO();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         if (!DashboardServlet.isLoggedIn(req)) { res.sendRedirect("login.jsp"); return; }
-
         String action = req.getParameter("action");
         if (action == null) action = "list";
-
         switch (action) {
             case "edit" -> {
                 Student s = dao.getById(parse(req.getParameter("id")));
@@ -35,7 +30,6 @@ public class StudentServlet extends HttpServlet {
                 String q = req.getParameter("search");
                 List<Student> students = (q != null && !q.isBlank())
                     ? dao.search(q.trim()) : dao.getAll();
-
                 // Convert to JSON string
                 StringBuilder json = new StringBuilder("[");
                 for (int i = 0; i < students.size(); i++) {
@@ -52,14 +46,12 @@ public class StudentServlet extends HttpServlet {
                         .append("}");
                 }
                 json.append("]");
-
                 req.setAttribute("studentsJson", json.toString());
                 req.setAttribute("searchQuery", q != null ? q : "");
                 req.getRequestDispatcher("students.jsp").forward(req, res);
             }
         }
     }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -70,7 +62,6 @@ public class StudentServlet extends HttpServlet {
         String course = trim(req.getParameter("course"));
         String phone  = trim(req.getParameter("phone"));
         String addr   = trim(req.getParameter("address"));
-
         if (name.isEmpty() || email.isEmpty() || course.isEmpty()) {
             req.setAttribute("error", "Name, email and course are required.");
             req.getRequestDispatcher("add-student.jsp").forward(req, res); return;
@@ -78,7 +69,6 @@ public class StudentServlet extends HttpServlet {
         Student s = new Student();
         s.setName(name); s.setEmail(email); s.setCourse(course);
         s.setPhone(phone); s.setAddress(addr);
-
         if ("edit".equals(action)) {
             s.setId(parse(req.getParameter("id")));
             boolean ok = dao.update(s);
@@ -88,7 +78,6 @@ public class StudentServlet extends HttpServlet {
             res.sendRedirect("StudentServlet?" + (ok ? "success=Student+added" : "error=Email+already+exists"));
         }
     }
-
     private String esc(String v) {
         if (v == null) return "";
         return v.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ").replace("\r", "");

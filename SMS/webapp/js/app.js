@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-
   // Set admin name in sidebar
   const nameInput = document.getElementById('smsAdminName');
   if (nameInput && nameInput.value) {
@@ -8,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (nameEl) nameEl.textContent = nameInput.value;
     if (initEl) initEl.textContent = nameInput.value.charAt(0).toUpperCase();
   }
-
   // Auto-dismiss alerts after 5s
   document.querySelectorAll('.alert').forEach(function (el) {
     setTimeout(function () {
@@ -17,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
       setTimeout(function () { el.remove(); }, 400);
     }, 5000);
   });
-
   // Show success/error from URL query params
   const params  = new URLSearchParams(window.location.search);
   const success = params.get('success');
@@ -40,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function () {
                       decodeURIComponent(error.replace(/\+/g,' '));
     }
   }
-
   // Highlight active nav item
   const path = window.location.pathname + window.location.search;
   document.querySelectorAll('.nav-item').forEach(function (item) {
@@ -50,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
-
 function openSidebar() {
   document.getElementById('sidebar').classList.add('open');
   document.getElementById('sidebarOverlay').style.display = 'block';

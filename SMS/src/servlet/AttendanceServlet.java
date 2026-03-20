@@ -1,5 +1,4 @@
 package com.sms.servlet;
-
 import com.sms.dao.*;
 import com.sms.model.Attendance;
 import com.sms.model.Student;
@@ -11,21 +10,17 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
-
 @WebServlet("/AttendanceServlet")
 public class AttendanceServlet extends HttpServlet {
     private final AttendanceDAO dao        = new AttendanceDAO();
     private final StudentDAO    studentDAO = new StudentDAO();
     private final SubjectDAO    subjectDAO = new SubjectDAO();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         if (!DashboardServlet.isLoggedIn(req)) { res.sendRedirect("login.jsp"); return; }
-
         String dateParam = req.getParameter("date");
         String sidParam  = req.getParameter("studentId");
-
         List<Attendance> records;
         if (dateParam != null && !dateParam.isBlank()) {
             try {
@@ -37,7 +32,6 @@ public class AttendanceServlet extends HttpServlet {
         } else {
             records = dao.getAll();
         }
-
         // Attendance records JSON
         StringBuilder aJson = new StringBuilder("[");
         for (int i = 0; i < records.size(); i++) {
@@ -54,7 +48,6 @@ public class AttendanceServlet extends HttpServlet {
         }
         aJson.append("]");
         req.setAttribute("attendanceJson", aJson.toString());
-
         // Students JSON for dropdown
         List<Student> students = studentDAO.getAll();
         StringBuilder sJson = new StringBuilder("[");
@@ -67,7 +60,6 @@ public class AttendanceServlet extends HttpServlet {
         }
         sJson.append("]");
         req.setAttribute("studentsJson", sJson.toString());
-
         // Subjects JSON for dropdown
         List<Subject> subjects = subjectDAO.getAll();
         StringBuilder subJson = new StringBuilder("[");
@@ -80,7 +72,6 @@ public class AttendanceServlet extends HttpServlet {
         }
         subJson.append("]");
         req.setAttribute("subjectsJson", subJson.toString());
-
         // Stats JSON
         List<Map<String, Object>> stats = dao.getPercentages();
         StringBuilder stJson = new StringBuilder("[");
@@ -97,10 +88,8 @@ public class AttendanceServlet extends HttpServlet {
         }
         stJson.append("]");
         req.setAttribute("attendanceStatsJson", stJson.toString());
-
         req.getRequestDispatcher("attendance.jsp").forward(req, res);
     }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -117,7 +106,6 @@ public class AttendanceServlet extends HttpServlet {
             res.sendRedirect("AttendanceServlet?error=Invalid+data");
         }
     }
-
     private String esc(Object v) {
         if (v == null) return "";
         return v.toString().replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ").replace("\r", "");

@@ -1,7 +1,5 @@
 package com.sms.dao;
-
 import java.util.List;
-
 public interface GenericDAO<T> {
     List<T> getAll();
     T       getById(int id);

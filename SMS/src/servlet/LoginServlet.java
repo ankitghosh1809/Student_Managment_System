@@ -1,16 +1,13 @@
 package com.sms.servlet;
-
 import com.sms.dao.AdminDAO;
 import com.sms.model.Admin;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
-
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
     private final AdminDAO adminDAO = new AdminDAO();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -20,7 +17,6 @@ public class LoginServlet extends HttpServlet {
         }
         req.getRequestDispatcher("login.jsp").forward(req, res);
     }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {

@@ -1,10 +1,8 @@
 package com.sms.servlet;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
-
 @WebServlet("/StudentLogoutServlet")
 public class StudentLogoutServlet extends HttpServlet {
     @Override
