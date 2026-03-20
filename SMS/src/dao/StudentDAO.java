@@ -46,6 +46,19 @@ public class StudentDAO implements GenericDAO<Student> {
         return null;
     }
 
+    public Student loginStudent(String rollNumber, String password) {
+        String sql = "SELECT * FROM student WHERE rollNumber=? AND password=?";
+        try (Connection c = DBConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, rollNumber);
+            ps.setString(2, password);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return map(rs);
+            }
+        } catch (SQLException e) { System.err.println("StudentDAO.loginStudent: " + e.getMessage()); }
+        return null;
+    }
+
     @Override
     public boolean insert(Student s) {
         String sql = "INSERT INTO student (name,email,course,phone,address) VALUES (?,?,?,?,?)";
@@ -96,10 +109,15 @@ public class StudentDAO implements GenericDAO<Student> {
 
     private Student map(ResultSet rs) throws SQLException {
         Student s = new Student();
-        s.setId(rs.getInt("id")); s.setName(rs.getString("name"));
-        s.setEmail(rs.getString("email")); s.setCourse(rs.getString("course"));
-        s.setPhone(rs.getString("phone")); s.setAddress(rs.getString("address"));
+        s.setId(rs.getInt("id"));
+        s.setName(rs.getString("name"));
+        s.setEmail(rs.getString("email"));
+        s.setCourse(rs.getString("course"));
+        s.setPhone(rs.getString("phone"));
+        s.setAddress(rs.getString("address"));
         s.setEnrollmentDate(rs.getDate("enrollmentDate"));
+        try { s.setRollNumber(rs.getString("rollNumber")); } catch (SQLException e) {}
+        try { s.setPassword(rs.getString("password")); } catch (SQLException e) {}
         return s;
     }
 }

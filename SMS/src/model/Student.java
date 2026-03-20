@@ -9,6 +9,8 @@ public class Student extends BaseEntity {
     private String phone;
     private String address;
     private Date   enrollmentDate;
+    private String rollNumber;
+    private String password;
 
     public Student() { super(); }
     public Student(int id, String name, String email, String course, String phone, String address) {
@@ -30,6 +32,10 @@ public class Student extends BaseEntity {
     public void setPhone(String p)   { this.phone = p; }
     public String getAddress() { return address; }
     public void setAddress(String a) { this.address = a; }
-    public Date getEnrollmentDate()        { return enrollmentDate; }
-    public void setEnrollmentDate(Date d)  { this.enrollmentDate = d; }
+    public Date getEnrollmentDate()       { return enrollmentDate; }
+    public void setEnrollmentDate(Date d) { this.enrollmentDate = d; }
+    public String getRollNumber()         { return rollNumber; }
+    public void setRollNumber(String r)   { this.rollNumber = r; }
+    public String getPassword()           { return password; }
+    public void setPassword(String p)     { this.password = p; }
 }
