@@ -1,9 +1,30 @@
+# Compiled Java classes
 *.class
+
+# Log files
 *.log
+
+# WAR files
 *.war
+
+# macOS
 .DS_Store
-/tomcat/
-catalina.out
+.AppleDouble
+
+# Database backup
+sms_db_backup.sql
+*.sql.bak
+
+# IDE files
 .idea/
 .vscode/
 *.iml
+*.ipr
+*.iws
+
+# JAR files (download separately)
+*.jar
+
+# Tomcat
+catalina.out
+/tomcat/
