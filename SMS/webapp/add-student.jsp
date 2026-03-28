@@ -1,11 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Add Student — Student MS</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="/SMS/css/style.css">
 </head>
 <body>
 <div class="app-layout">
@@ -57,7 +56,7 @@
     </div>
   </main>
 </div>
-<script src="js/app.js"></script>
+<script src="/SMS/js/app.js"></script>
 <script>
   const errMsg = '${error}';
   if (errMsg) {

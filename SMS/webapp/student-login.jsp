@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Admin Login — Student MS</title>
+  <title>Student Login — Student MS</title>
   <link rel="stylesheet" href="/SMS/css/style.css">
   <style>
     .portal-switch {
@@ -18,7 +18,9 @@
       text-decoration: none; color: var(--text-3);
       transition: all var(--transition);
     }
-    .portal-btn.active { background: var(--navy); color: var(--white); }
+    .portal-btn.active {
+      background: var(--navy); color: var(--white);
+    }
     .portal-btn:hover:not(.active) { background: var(--cream); }
   </style>
 </head>
@@ -33,15 +35,16 @@
       </svg>
     </div>
     <h1>Student MS</h1>
-    <p>Sign in to your account</p>
+    <p>Student Portal</p>
   </div>
 
   <!-- Portal Switch -->
   <div class="portal-switch">
-    <a href="login.jsp" class="portal-btn active">Admin Login</a>
-    <a href="StudentLoginServlet" class="portal-btn">Student Login</a>
+    <a href="login.jsp" class="portal-btn">Admin Login</a>
+    <a href="StudentLoginServlet" class="portal-btn active">Student Login</a>
   </div>
 
+  <div id="serverAlert" style="display:none"></div>
   <%
     String errAttr = (String) request.getAttribute("error");
     if (errAttr != null && !errAttr.isEmpty()) {
@@ -51,20 +54,20 @@
   </div>
   <% } %>
 
-  <form id="loginForm" action="LoginServlet" method="POST" novalidate>
+  <form id="loginForm" action="StudentLoginServlet" method="POST" novalidate>
     <div class="form-group">
-      <label class="form-label">Username</label>
+      <label class="form-label">Roll Number</label>
       <div class="input-icon-wrap">
         <span class="ico">
           <svg width="15" height="15" fill="none" stroke="#7A8A9A" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
           </svg>
         </span>
-        <input type="text" id="username" name="username" class="form-control"
-               placeholder="Enter username" autocomplete="username">
+        <input type="text" id="rollNumber" name="rollNumber" class="form-control"
+               placeholder="e.g. CS001" autocomplete="username">
       </div>
-      <span class="field-error" id="usernameErr">Username is required.</span>
+      <span class="field-error" id="rollErr">Roll number is required.</span>
     </div>
     <div class="form-group">
       <label class="form-label">Password</label>
@@ -78,7 +81,7 @@
         <input type="password" id="password" name="password" class="form-control"
                placeholder="Enter password" autocomplete="current-password">
       </div>
-      <span class="field-error" id="passwordErr">Password is required.</span>
+      <span class="field-error" id="passErr">Password is required.</span>
     </div>
     <button type="submit" class="btn btn-primary btn-full" style="padding:12px;">
       Sign In
@@ -88,20 +91,22 @@
       </svg>
     </button>
   </form>
+
   <div class="login-hint">
-    Default: <strong>admin</strong> / <strong>admin123</strong>
+    Default password: <strong>student123</strong><br>
+    Roll number format: <strong>CS001, CS002...</strong>
   </div>
 </div>
 <script>
   document.getElementById('loginForm').addEventListener('submit', function(ev) {
     var ok = true;
-    var u = document.getElementById('username');
+    var r = document.getElementById('rollNumber');
     var p = document.getElementById('password');
-    var uE = document.getElementById('usernameErr');
-    var pE = document.getElementById('passwordErr');
-    uE.classList.remove('show'); pE.classList.remove('show');
-    u.style.borderColor = ''; p.style.borderColor = '';
-    if (!u.value.trim()) { uE.classList.add('show'); u.style.borderColor='var(--danger)'; ok=false; }
+    var rE = document.getElementById('rollErr');
+    var pE = document.getElementById('passErr');
+    rE.classList.remove('show'); pE.classList.remove('show');
+    r.style.borderColor = ''; p.style.borderColor = '';
+    if (!r.value.trim()) { rE.classList.add('show'); r.style.borderColor='var(--danger)'; ok=false; }
     if (!p.value.trim()) { pE.classList.add('show'); p.style.borderColor='var(--danger)'; ok=false; }
     if (!ok) ev.preventDefault();
   });
