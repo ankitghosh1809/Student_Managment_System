@@ -106,5 +106,7 @@
     if (!ok) ev.preventDefault();
   });
 </script>
+<script src="/SMS/js/app.js"></script>
+<script src="/SMS/js/app.js"></script>
 </body>
 </html>
