@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,45 +12,61 @@
   <%@ include file="navbar.jsp" %>
   <input type="hidden" id="smsAdminName" value="${adminName}">
   <main class="main-content">
-    <button class="hamburger" onclick="openSidebar()">☰</button>
+    <button class="hamburger" onclick="openSidebar()">Menu</button>
     <div class="topbar">
-      <div class="page-title"><h1>Add Student</h1><p>Enrol a new student</p></div>
-      <a href="StudentServlet" class="btn btn-outline">← Back</a>
+      <div class="page-title">
+        <h1>Add Student</h1>
+        <p>Enrol a new student — roll number will be auto assigned</p>
+      </div>
+      <a href="/SMS/StudentServlet" class="btn btn-outline">Back</a>
     </div>
     <div id="serverAlert" style="display:none"></div>
     <div class="card" style="max-width:760px;">
-      <div class="card-header"><h3>Student Information</h3></div>
+      <div class="card-header">
+        <h3>Student Information</h3>
+        <span class="badge badge-info">Roll number auto assigned after saving</span>
+      </div>
       <div class="card-body">
-        <form id="addForm" action="StudentServlet" method="POST" novalidate>
+        <form id="addForm" action="/SMS/StudentServlet" method="POST" novalidate>
           <input type="hidden" name="action" value="add">
           <div class="form-grid-2">
             <div class="form-group">
               <label class="form-label">Full Name <span class="required">*</span></label>
-              <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Arjun Sharma">
+              <input type="text" id="name" name="name" class="form-control"
+                     placeholder="e.g. Arjun Sharma">
               <span class="field-error" id="nameErr">Full name is required.</span>
             </div>
             <div class="form-group">
               <label class="form-label">Email <span class="required">*</span></label>
-              <input type="email" id="email" name="email" class="form-control" placeholder="e.g. arjun@example.com">
+              <input type="email" id="email" name="email" class="form-control"
+                     placeholder="e.g. arjun@example.com">
               <span class="field-error" id="emailErr">Valid email is required.</span>
             </div>
             <div class="form-group">
               <label class="form-label">Course <span class="required">*</span></label>
-              <input type="text" id="course" name="course" class="form-control" placeholder="e.g. B.Tech CS">
+              <input type="text" id="course" name="course" class="form-control"
+                     placeholder="e.g. B.Tech Computer Science">
               <span class="field-error" id="courseErr">Course is required.</span>
             </div>
             <div class="form-group">
               <label class="form-label">Phone</label>
-              <input type="tel" name="phone" class="form-control" placeholder="e.g. 9876543210">
+              <input type="tel" name="phone" class="form-control"
+                     placeholder="e.g. 9876543210">
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">Address</label>
-            <textarea name="address" class="form-control" rows="3" placeholder="Home address"></textarea>
+            <textarea name="address" class="form-control" rows="3"
+                      placeholder="Home address"></textarea>
+          </div>
+          <div class="alert alert-success" style="margin-top:8px;">
+            <span class="alert-icon">&#8505;</span>
+            Default login password will be <strong>student123</strong>.
+            Roll number will be auto assigned as <strong>CS001, CS002...</strong>
           </div>
           <div class="d-flex gap-2 mt-4">
-            <button type="submit" class="btn btn-primary">✅ Add Student</button>
-            <a href="StudentServlet" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-primary">Add Student</button>
+            <a href="/SMS/StudentServlet" class="btn btn-outline">Cancel</a>
           </div>
         </form>
       </div>
@@ -58,19 +75,20 @@
 </div>
 <script src="/SMS/js/app.js"></script>
 <script>
-  const errMsg = '${error}';
+  var errMsg = '${error}';
   if (errMsg) {
-    const b = document.getElementById('serverAlert');
+    var b = document.getElementById('serverAlert');
     b.style.display = 'flex'; b.className = 'alert alert-danger';
-    b.innerHTML = '<span class="alert-icon">⚠️</span>' + errMsg;
+    b.innerHTML = '<span class="alert-icon">!</span> ' + errMsg;
   }
   document.getElementById('addForm').addEventListener('submit', function(e) {
-    let ok = true;
+    var ok = true;
     [['name','nameErr'],['email','emailErr'],['course','courseErr']].forEach(function(pair) {
-      const el = document.getElementById(pair[0]), err = document.getElementById(pair[1]);
+      var el = document.getElementById(pair[0]);
+      var err = document.getElementById(pair[1]);
       err.classList.remove('show'); el.style.borderColor = '';
-      const invalid = !el.value.trim() ||
-        (pair[0] === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value));
+      var invalid = !el.value.trim() ||
+        (pair[0]==='email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value));
       if (invalid) { err.classList.add('show'); el.style.borderColor='var(--danger)'; ok=false; }
     });
     if (!ok) e.preventDefault();
