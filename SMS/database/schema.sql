@@ -15,7 +15,9 @@ CREATE TABLE IF NOT EXISTS student (
     course         VARCHAR(100) NOT NULL,
     phone          VARCHAR(20),
     address        TEXT,
-    enrollmentDate DATE DEFAULT (CURRENT_DATE)
+    enrollmentDate DATE DEFAULT (CURRENT_DATE),
+    rollNumber     VARCHAR(20)  UNIQUE,
+    password       VARCHAR(255) NOT NULL DEFAULT 'student123'
 );
 
 CREATE TABLE IF NOT EXISTS subject (
@@ -39,12 +41,12 @@ CREATE TABLE IF NOT EXISTS attendance (
 
 INSERT INTO admin (username, password, fullName) VALUES ('admin','admin123','System Administrator');
 
-INSERT INTO student (name, email, course, phone, address) VALUES
-('Arjun Sharma',  'arjun@example.com',  'B.Tech Computer Science',      '9876543210', 'Mumbai'),
-('Priya Patel',   'priya@example.com',  'B.Tech Information Technology', '9876543211', 'Pune'),
-('Rohan Mehta',   'rohan@example.com',  'BCA',                           '9876543212', 'Delhi'),
-('Sneha Gupta',   'sneha@example.com',  'MCA',                           '9876543213', 'Bangalore'),
-('Vikram Singh',  'vikram@example.com', 'B.Tech Electronics',            '9876543214', 'Ahmedabad');
+INSERT INTO student (name, email, course, phone, address, rollNumber, password) VALUES
+('Arjun Sharma',  'arjun@example.com',  'B.Tech Computer Science',       '9876543210', 'Mumbai',    'CS001', 'student123'),
+('Priya Patel',   'priya@example.com',  'B.Tech Information Technology', '9876543211', 'Pune',      'CS002', 'student123'),
+('Rohan Mehta',   'rohan@example.com',  'BCA',                           '9876543212', 'Delhi',     'CS003', 'student123'),
+('Sneha Gupta',   'sneha@example.com',  'MCA',                           '9876543213', 'Bangalore', 'CS004', 'student123'),
+('Vikram Singh',  'vikram@example.com', 'B.Tech Electronics',            '9876543214', 'Ahmedabad', 'CS005', 'student123');
 
 INSERT INTO subject (name, code, credits, description) VALUES
 ('Data Structures & Algorithms', 'CS101', 4, 'Core data structures'),
