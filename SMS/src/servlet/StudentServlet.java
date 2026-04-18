@@ -94,7 +94,6 @@ public class StudentServlet extends HttpServlet {
             boolean ok = dao.insert(s);
             if (ok) {
                 // Auto assign roll number based on new ID
-                dao.assignRollNumber(s.getEmail());
             }
             res.sendRedirect("StudentServlet?" + (ok ? "success=Student+added+with+roll+number+auto+assigned"
                                                      : "error=Email+already+exists"));

@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS student (
     address        TEXT,
     enrollmentDate DATE DEFAULT (CURRENT_DATE),
     rollNumber     VARCHAR(20)  UNIQUE,
-    password       VARCHAR(255) NOT NULL DEFAULT 'student123'
+    password       VARCHAR(255) NOT NULL DEFAULT '$2a$12$9byuGy2p3dSJIfJ2sfu4MeGJ5lNJ5kPoDEewbNDoTap/KnaGUMP46'
 );
 
 CREATE TABLE IF NOT EXISTS subject (
@@ -39,14 +39,14 @@ CREATE TABLE IF NOT EXISTS attendance (
     UNIQUE KEY uq_att (studentId, subjectId, date)
 );
 
-INSERT INTO admin (username, password, fullName) VALUES ('admin','admin123','System Administrator');
+INSERT INTO admin (username, password, fullName) VALUES ('admin','$2a$12$M2WhSdMMT3V4eaMkJtuOtOyo.e3Daml6USVNTPbQb6N8YEwRiEelu','System Administrator');
 
 INSERT INTO student (name, email, course, phone, address, rollNumber, password) VALUES
-('Arjun Sharma',  'arjun@example.com',  'B.Tech Computer Science',       '9876543210', 'Mumbai',    'CS001', 'student123'),
-('Priya Patel',   'priya@example.com',  'B.Tech Information Technology', '9876543211', 'Pune',      'CS002', 'student123'),
-('Rohan Mehta',   'rohan@example.com',  'BCA',                           '9876543212', 'Delhi',     'CS003', 'student123'),
-('Sneha Gupta',   'sneha@example.com',  'MCA',                           '9876543213', 'Bangalore', 'CS004', 'student123'),
-('Vikram Singh',  'vikram@example.com', 'B.Tech Electronics',            '9876543214', 'Ahmedabad', 'CS005', 'student123');
+('Arjun Sharma',  'arjun@example.com',  'B.Tech Computer Science',       '9876543210', 'Mumbai',    'CS001', '$2a$12$9byuGy2p3dSJIfJ2sfu4MeGJ5lNJ5kPoDEewbNDoTap/KnaGUMP46'),
+('Priya Patel',   'priya@example.com',  'B.Tech Information Technology', '9876543211', 'Pune',      'CS002', '$2a$12$9byuGy2p3dSJIfJ2sfu4MeGJ5lNJ5kPoDEewbNDoTap/KnaGUMP46'),
+('Rohan Mehta',   'rohan@example.com',  'BCA',                           '9876543212', 'Delhi',     'CS003', '$2a$12$9byuGy2p3dSJIfJ2sfu4MeGJ5lNJ5kPoDEewbNDoTap/KnaGUMP46'),
+('Sneha Gupta',   'sneha@example.com',  'MCA',                           '9876543213', 'Bangalore', 'CS004', '$2a$12$9byuGy2p3dSJIfJ2sfu4MeGJ5lNJ5kPoDEewbNDoTap/KnaGUMP46'),
+('Vikram Singh',  'vikram@example.com', 'B.Tech Electronics',            '9876543214', 'Ahmedabad', 'CS005', '$2a$12$9byuGy2p3dSJIfJ2sfu4MeGJ5lNJ5kPoDEewbNDoTap/KnaGUMP46');
 
 INSERT INTO subject (name, code, credits, description) VALUES
 ('Data Structures & Algorithms', 'CS101', 4, 'Core data structures'),

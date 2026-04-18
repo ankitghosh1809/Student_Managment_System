@@ -1,16 +1,18 @@
 package com.sms.dao;
 import com.sms.model.Admin;
 import com.sms.util.DBConnection;
+import org.mindrot.jbcrypt.BCrypt;
 import java.sql.*;
 import java.util.*;
 public class AdminDAO implements GenericDAO<Admin> {
     public Admin login(String username, String password) {
-        String sql = "SELECT * FROM admin WHERE username=? AND password=?";
+        String sql = "SELECT * FROM admin WHERE username=?";
         try (Connection c = DBConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, username); ps.setString(2, password);
+            ps.setString(1, username);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return map(rs);
+                if (rs.next() && BCrypt.checkpw(password, rs.getString("password")))
+                    return map(rs);
             }
         } catch (SQLException e) { System.err.println("AdminDAO.login: " + e.getMessage()); }
         return null;

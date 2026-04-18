@@ -1,0 +1,6 @@
+webapp/WEB-INF/classes/
+*.class
+db.properties
+target/
+build/
+*.war

@@ -87,3 +87,21 @@ public class AttendanceDAO implements GenericDAO<Attendance> {
         return a;
     }
 }
+
+    public java.util.Map<String,Object> getPercentageForStudent(int studentId) {
+        String sql = "SELECT COUNT(id) total, SUM(CASE WHEN status='Present' THEN 1 ELSE 0 END) present FROM attendance WHERE studentId=?";
+        try (Connection c = DBConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, studentId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int total = rs.getInt("total"), present = rs.getInt("present");
+                    double pct = total > 0 ? Math.round(present * 1000.0 / total) / 10.0 : 0.0;
+                    java.util.Map<String,Object> row = new java.util.LinkedHashMap<>();
+                    row.put("total", total); row.put("present", present); row.put("pct", pct);
+                    return row;
+                }
+            }
+        } catch (SQLException e) { System.err.println("AttendanceDAO.getPercentageForStudent: " + e.getMessage()); }
+        return java.util.Map.of("total", 0, "present", 0, "pct", 0.0);
+    }
