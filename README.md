@@ -36,6 +36,7 @@ A full-stack web-based Student Management System built with **Core Java OOP** pr
 | Server | Apache Tomcat 10 |
 | Architecture | MVC Pattern |
 | Design Pattern | DAO Pattern, Generic Interface |
+| Security | BCrypt password hashing (jBCrypt 0.4) |
 
 ---
 
@@ -43,60 +44,61 @@ A full-stack web-based Student Management System built with **Core Java OOP** pr
 
 | Concept | Where Applied |
 |---------|--------------|
-| **Abstraction** | `BaseEntity` (abstract class), `GenericDAO` (interface) |
-| **Encapsulation** | All model classes with private fields and getters/setters |
-| **Inheritance** | `Student`, `Admin`, `Subject`, `Attendance` extend `BaseEntity` |
-| **Polymorphism** | `getDisplayName()` overridden differently in each model class |
-| **Generics** | `GenericDAO<T>` — type-safe DAO interface |
+| Abstraction | `BaseEntity` (abstract class), `GenericDAO` (interface) |
+| Encapsulation | All model classes with private fields and getters/setters |
+| Inheritance | `Student`, `Admin`, `Subject`, `Attendance` extend `BaseEntity` |
+| Polymorphism | `getDisplayName()` overridden differently in each model class |
+| Generics | `GenericDAO<T>` — type-safe DAO interface |
 
 ---
 
 ## Project Structure
+
 ```
 SMS/
 ├── src/
 │   ├── model/
-│   │   ├── BaseEntity.java       ← Abstract parent (Abstraction)
-│   │   ├── Student.java          ← Extends BaseEntity
-│   │   ├── Admin.java            ← Extends BaseEntity
-│   │   ├── Subject.java          ← Extends BaseEntity
-│   │   └── Attendance.java       ← Extends BaseEntity
+│   │   ├── BaseEntity.java
+│   │   ├── Student.java
+│   │   ├── Admin.java
+│   │   ├── Subject.java
+│   │   └── Attendance.java
 │   ├── dao/
-│   │   ├── GenericDAO.java       ← Interface (Abstraction)
-│   │   ├── StudentDAO.java       ← Implements GenericDAO
-│   │   ├── AdminDAO.java         ← Implements GenericDAO
-│   │   ├── SubjectDAO.java       ← Implements GenericDAO
-│   │   ├── AttendanceDAO.java    ← Implements GenericDAO
-│   │   └── MarksDAO.java         ← Marks & grades operations
+│   │   ├── GenericDAO.java
+│   │   ├── StudentDAO.java
+│   │   ├── AdminDAO.java
+│   │   ├── SubjectDAO.java
+│   │   ├── AttendanceDAO.java
+│   │   └── MarksDAO.java
 │   ├── servlet/
-│   │   ├── LoginServlet.java         ← Admin login
-│   │   ├── LogoutServlet.java        ← Admin logout
-│   │   ├── DashboardServlet.java     ← Admin dashboard
-│   │   ├── StudentServlet.java       ← Student CRUD
-│   │   ├── SubjectServlet.java       ← Subject CRUD
-│   │   ├── AttendanceServlet.java    ← Attendance management
-│   │   ├── MarksServlet.java         ← Marks & grades management
-│   │   ├── StudentLoginServlet.java  ← Student login
-│   │   ├── StudentDashboardServlet.java ← Student portal
-│   │   └── StudentLogoutServlet.java ← Student logout
+│   │   ├── LoginServlet.java
+│   │   ├── LogoutServlet.java
+│   │   ├── DashboardServlet.java
+│   │   ├── StudentServlet.java
+│   │   ├── SubjectServlet.java
+│   │   ├── AttendanceServlet.java
+│   │   ├── MarksServlet.java
+│   │   ├── StudentLoginServlet.java
+│   │   ├── StudentDashboardServlet.java
+│   │   └── StudentLogoutServlet.java
 │   └── util/
-│       └── DBConnection.java     ← DB connection utility
+│       └── DBConnection.java
 ├── webapp/
-│   ├── css/style.css             ← Responsive stylesheet
-│   ├── js/app.js                 ← Client-side JavaScript
-│   ├── login.jsp                 ← Admin login page
-│   ├── navbar.jsp                ← Shared sidebar
-│   ├── dashboard.jsp             ← Admin dashboard
-│   ├── students.jsp              ← Student list
-│   ├── add-student.jsp           ← Add student form
-│   ├── edit-student.jsp          ← Edit student form
-│   ├── subjects.jsp              ← Subject management
-│   ├── attendance.jsp            ← Attendance tracking
-│   ├── marks.jsp                 ← Marks & grades (admin)
-│   ├── student-login.jsp         ← Student login page
-│   └── student-dashboard.jsp     ← Student portal
+│   ├── css/style.css
+│   ├── js/app.js
+│   ├── login.jsp
+│   ├── navbar.jsp
+│   ├── dashboard.jsp
+│   ├── students.jsp
+│   ├── add-student.jsp
+│   ├── edit-student.jsp
+│   ├── subjects.jsp
+│   ├── attendance.jsp
+│   ├── marks.jsp
+│   ├── student-login.jsp
+│   └── student-dashboard.jsp
 └── database/
-    └── schema.sql                ← MySQL schema + sample data
+    └── schema.sql
 ```
 
 ---
@@ -105,10 +107,10 @@ SMS/
 
 | Table | Description |
 |-------|-------------|
-| `admin` | Admin login credentials |
-| `student` | Student records with roll number and password |
+| `admin` | Admin credentials (BCrypt hashed password) |
+| `student` | Student records with roll number and BCrypt hashed password |
 | `subject` | Course subjects with credits |
-| `attendance` | Attendance records (Present/Absent/Late) |
+| `attendance` | Attendance records (Present / Absent / Late) |
 | `marks` | Student marks per subject with auto-calculated grades |
 
 ---
@@ -133,25 +135,52 @@ SMS/
 - MySQL 8.x or 9.x
 - Apache Tomcat 10
 
-### 1. Import Database
+### 1. Clone the Repository
+
 ```bash
-mysql -u root -p < database/schema.sql
+git clone https://github.com/ankitghosh1809/Student_Managment_System.git
+cd Student_Managment_System
 ```
 
-### 2. Update DB Password
-Open `src/util/DBConnection.java` and change:
-```java
-private static final String PASS = "your_mysql_password";
+### 2. Import Database
+
+```bash
+mysql -u root -p < SMS/database/schema.sql
 ```
 
-### 3. Download JARs
-Place in `webapp/WEB-INF/lib/`:
+### 3. Create DB Config File
+
+Create a file at `~/sms-config/db.properties` outside the project folder:
+
+```properties
+db.url=jdbc:mysql://localhost:3306/sms_db?useSSL=false&serverTimezone=UTC
+db.user=root
+db.password=YOUR_MYSQL_PASSWORD
+```
+
+```bash
+chmod 600 ~/sms-config/db.properties
+```
+
+### 4. Download JARs
+
+Place the following in `SMS/webapp/WEB-INF/lib/`:
 - `mysql-connector-j-8.0.33.jar`
 - `jakarta.servlet-api-6.0.0.jar`
+- `jbcrypt-0.4.jar`
 
-### 4. Compile
+Download BCrypt directly:
+
 ```bash
-JARS="webapp/WEB-INF/lib/jakarta.servlet-api-6.0.0.jar:webapp/WEB-INF/lib/mysql-connector-j-8.0.33.jar"
+curl -L https://repo1.maven.org/maven2/org/mindrot/jbcrypt/0.4/jbcrypt-0.4.jar \
+  -o SMS/webapp/WEB-INF/lib/jbcrypt-0.4.jar
+```
+
+### 5. Compile
+
+```bash
+cd SMS
+JARS="webapp/WEB-INF/lib/jakarta.servlet-api-6.0.0.jar:webapp/WEB-INF/lib/mysql-connector-j-8.0.33.jar:webapp/WEB-INF/lib/jbcrypt-0.4.jar"
 
 javac -cp "$JARS" -d webapp/WEB-INF/classes \
   src/util/DBConnection.java \
@@ -178,13 +207,15 @@ javac -cp "$JARS" -d webapp/WEB-INF/classes \
   src/servlet/StudentLogoutServlet.java
 ```
 
-### 5. Deploy to Tomcat
+### 6. Deploy to Tomcat
+
 ```bash
 cp -r webapp /path/to/tomcat/webapps/SMS
 /path/to/tomcat/bin/startup.sh
 ```
 
-### 6. Open in Browser
+### 7. Open in Browser
+
 ```
 http://localhost:8080/SMS/LoginServlet
 ```
@@ -194,6 +225,7 @@ http://localhost:8080/SMS/LoginServlet
 ## Login Credentials
 
 ### Admin
+
 | Field | Value |
 |-------|-------|
 | URL | http://localhost:8080/SMS/LoginServlet |
@@ -201,20 +233,31 @@ http://localhost:8080/SMS/LoginServlet
 | Password | admin123 |
 
 ### Students
+
 | Field | Value |
 |-------|-------|
 | URL | http://localhost:8080/SMS/StudentLoginServlet |
-| Roll Number | CS001 to CS010 |
+| Roll Number | CS001 to CS005 |
 | Password | student123 |
 
 ---
 
-## Sample Data Included
+## Sample Data
 
-- 10 students with roll numbers CS001–CS010
-- 6 subjects (Data Structures, DBMS, Web Tech, OS, Networks, Software Engg)
-- Attendance records for last 5 days
-- Marks for all students across all subjects with auto-calculated grades
+- 5 students with roll numbers CS001–CS005
+- 5 subjects (Data Structures, DBMS, Web Technologies, Operating Systems, Computer Networks)
+- Sample attendance records
+- All passwords are BCrypt hashed in the database
+
+---
+
+## Security
+
+- Passwords hashed with BCrypt (cost factor 12) — never stored as plain text
+- DB credentials loaded from an external config file outside the project directory
+- All SQL queries use PreparedStatements — no SQL injection risk
+- Session-based authentication with 30-minute timeout
+- Sessions invalidated on logout
 
 ---
 
