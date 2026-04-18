@@ -24,7 +24,6 @@ public class StudentDashboardServlet extends HttpServlet {
             res.sendRedirect("StudentLoginServlet"); return;
         }
         Student student = (Student) session.getAttribute("student");
-        // Attendance
         List<Attendance> records = attendanceDAO.getByStudent(student.getId());
         StringBuilder aJson = new StringBuilder("[");
         for (int i = 0; i < records.size(); i++) {
@@ -36,22 +35,10 @@ public class StudentDashboardServlet extends HttpServlet {
                  .append("\"status\":\"").append(esc(a.getStatus())).append("\"}");
         }
         aJson.append("]");
-        // Attendance stats
-        List<Map<String, Object>> allStats = attendanceDAO.getPercentages();
-        StringBuilder statsJson = new StringBuilder("[");
-        boolean first = true;
-        for (Map<String, Object> row : allStats) {
-            Object idObj = row.get("id");
-            if (idObj != null && ((Number)idObj).intValue() == student.getId()) {
-                if (!first) statsJson.append(",");
-                statsJson.append("{\"total\":").append(row.get("total"))
-                         .append(",\"present\":").append(row.get("present"))
-                         .append(",\"pct\":").append(row.get("pct")).append("}");
-                first = false;
-            }
-        }
-        statsJson.append("]");
-        // Subjects
+        Map<String, Object> stat = attendanceDAO.getPercentageForStudent(student.getId());
+        String statsJson = "[{\"total\":" + stat.get("total") +
+                           ",\"present\":" + stat.get("present") +
+                           ",\"pct\":" + stat.get("pct") + "}]";
         List<Subject> subjects = subjectDAO.getAll();
         StringBuilder subJson = new StringBuilder("[");
         for (int i = 0; i < subjects.size(); i++) {
@@ -62,7 +49,6 @@ public class StudentDashboardServlet extends HttpServlet {
                    .append("\"credits\":").append(s.getCredits()).append("}");
         }
         subJson.append("]");
-        // Marks
         List<Map<String,Object>> marksList = marksDAO.getMarksByStudent(student.getId());
         StringBuilder mJson = new StringBuilder("[");
         for (int i = 0; i < marksList.size(); i++) {
@@ -80,7 +66,7 @@ public class StudentDashboardServlet extends HttpServlet {
         mJson.append("]");
         req.setAttribute("student", student);
         req.setAttribute("attendanceJson", aJson.toString());
-        req.setAttribute("statsJson", statsJson.toString());
+        req.setAttribute("statsJson", statsJson);
         req.setAttribute("subjectsJson", subJson.toString());
         req.setAttribute("marksJson", mJson.toString());
         req.getRequestDispatcher("student-dashboard.jsp").forward(req, res);

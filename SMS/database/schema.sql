@@ -60,3 +60,15 @@ INSERT INTO attendance (studentId, subjectId, date, status) VALUES
 (2,1,CURDATE(),'Absent'), (2,3,CURDATE(),'Present'),
 (3,1,CURDATE(),'Late'),   (3,2,CURDATE(),'Present'),
 (4,2,CURDATE(),'Present'),(5,1,CURDATE(),'Present');
+CREATE TABLE IF NOT EXISTS marks (
+    id        INT AUTO_INCREMENT PRIMARY KEY,
+    studentId INT          NOT NULL,
+    subjectId INT          NOT NULL,
+    marks     INT          NOT NULL DEFAULT 0,
+    maxMarks  INT          NOT NULL DEFAULT 100,
+    examType  VARCHAR(50)  NOT NULL DEFAULT 'Internal',
+    grade     VARCHAR(5)   NOT NULL DEFAULT 'F',
+    FOREIGN KEY (studentId) REFERENCES student(id) ON DELETE CASCADE,
+    FOREIGN KEY (subjectId) REFERENCES subject(id) ON DELETE CASCADE,
+    UNIQUE KEY uq_marks (studentId, subjectId, examType)
+);
