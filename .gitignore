@@ -28,3 +28,5 @@ sms_db_backup.sql
 # Tomcat
 catalina.out
 /tomcat/
+SMS/src/.DS_Store
+**/.DS_Store
