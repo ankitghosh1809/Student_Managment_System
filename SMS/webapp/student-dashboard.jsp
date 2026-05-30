@@ -12,7 +12,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>My Dashboard — Student MS</title>
-  <link rel="stylesheet" href="/SMS/css/style.css">
+  <link rel="stylesheet" href="/css/style.css">
   <style>
     .profile-card {
       background: var(--navy); border-radius: var(--radius-lg);
@@ -139,7 +139,7 @@
 
 </div>
 
-<script src="/SMS/js/app.js"></script>
+<script src="/js/app.js"></script>
 <script>
 var rawAtt      = '<%= request.getAttribute("attendanceJson") != null ? request.getAttribute("attendanceJson") : "[]" %>';
 var rawStats    = '<%= request.getAttribute("statsJson")      != null ? request.getAttribute("statsJson")      : "[]" %>';

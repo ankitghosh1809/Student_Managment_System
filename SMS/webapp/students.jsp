@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Students — Student MS</title>
-  <link rel="stylesheet" href="/SMS/css/style.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div class="app-layout">
@@ -51,7 +51,7 @@
     </div>
   </div>
 </div>
-<script src="/SMS/js/app.js"></script>
+<script src="/js/app.js"></script>
 <script>
 var rawStudents = '<%= request.getAttribute("studentsJson") != null ? request.getAttribute("studentsJson") : "[]" %>';
 var sq = '<%= request.getAttribute("searchQuery") != null ? request.getAttribute("searchQuery") : "" %>';

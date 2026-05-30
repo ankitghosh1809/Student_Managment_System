@@ -9,7 +9,14 @@ public class DBConnection {
         String raw = System.getenv("DATABASE_URL");
         System.out.println("[DBConnection] DATABASE_URL set: " + (raw != null));
         if (raw == null) throw new RuntimeException("DATABASE_URL env var is missing");
-        if (!raw.startsWith("jdbc:")) raw = "jdbc:" + raw;
+        // Neon/Render give "postgres://" or "postgresql://" — JDBC needs "jdbc:postgresql://"
+        if (raw.startsWith("postgres://")) {
+            raw = "jdbc:postgresql://" + raw.substring("postgres://".length());
+        } else if (raw.startsWith("postgresql://")) {
+            raw = "jdbc:postgresql://" + raw.substring("postgresql://".length());
+        } else if (!raw.startsWith("jdbc:")) {
+            raw = "jdbc:" + raw;
+        }
         JDBC_URL = raw;
         System.out.println("[DBConnection] URL prefix: " + JDBC_URL.substring(0, Math.min(45, JDBC_URL.length())));
         try { Class.forName("org.postgresql.Driver"); }

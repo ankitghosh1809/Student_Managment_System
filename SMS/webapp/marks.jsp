@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Marks — Student MS</title>
-  <link rel="stylesheet" href="/SMS/css/style.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div class="app-layout">
@@ -88,7 +88,7 @@
     </div>
   </main>
 </div>
-<script src="/SMS/js/app.js"></script>
+<script src="/js/app.js"></script>
 <script>
 var rawMarks    = '<%= request.getAttribute("marksJson")   != null ? request.getAttribute("marksJson")   : "[]" %>';
 var rawSummary  = '<%= request.getAttribute("summaryJson") != null ? request.getAttribute("summaryJson") : "[]" %>';

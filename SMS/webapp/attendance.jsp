@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Attendance — Student MS</title>
-  <link rel="stylesheet" href="/SMS/css/style.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div class="app-layout">
@@ -81,7 +81,7 @@
     </div>
   </main>
 </div>
-<script src="/SMS/js/app.js"></script>
+<script src="/js/app.js"></script>
 <script>
 document.getElementById('attDate').value = new Date().toISOString().split('T')[0];
 
