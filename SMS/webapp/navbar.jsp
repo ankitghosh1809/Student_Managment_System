@@ -11,7 +11,7 @@
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-label">Main</div>
-    <a href="/SMS/DashboardServlet" class="nav-item">
+    <a href="/DashboardServlet" class="nav-item">
       <span class="nav-icon">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <rect x="3" y="3" width="7" height="7"/>
@@ -22,7 +22,7 @@
       </span>
       Dashboard
     </a>
-    <a href="/SMS/StudentServlet" class="nav-item">
+    <a href="/StudentServlet" class="nav-item">
       <span class="nav-icon">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -33,7 +33,7 @@
       </span>
       Students
     </a>
-    <a href="/SMS/SubjectServlet" class="nav-item">
+    <a href="/SubjectServlet" class="nav-item">
       <span class="nav-icon">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
@@ -42,7 +42,7 @@
       </span>
       Subjects
     </a>
-    <a href="/SMS/AttendanceServlet" class="nav-item">
+    <a href="/AttendanceServlet" class="nav-item">
       <span class="nav-icon">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -53,7 +53,7 @@
       </span>
       Attendance
     </a>
-    <a href="/SMS/MarksServlet" class="nav-item">
+    <a href="/MarksServlet" class="nav-item">
       <span class="nav-icon">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -73,7 +73,7 @@
         <div class="admin-role">Admin</div>
       </div>
     </div>
-    <a href="/SMS/LogoutServlet" class="btn-logout">
+    <a href="/LogoutServlet" class="btn-logout">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
         <polyline points="16 17 21 12 16 7"/>
@@ -92,7 +92,7 @@
     var links = document.querySelectorAll('.nav-item');
     links.forEach(function(link) {
       var href = link.getAttribute('href') || '';
-      if (path.indexOf(href.replace('/SMS/','')) > -1) {
+      if (path.indexOf(href.replace('/','')) > -1) {
         link.classList.add('active');
       }
     });

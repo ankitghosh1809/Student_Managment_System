@@ -18,7 +18,7 @@
         <h1>Add Student</h1>
         <p>Enrol a new student — roll number will be auto assigned</p>
       </div>
-      <a href="/SMS/StudentServlet" class="btn btn-outline">Back</a>
+      <a href="/StudentServlet" class="btn btn-outline">Back</a>
     </div>
     <div id="serverAlert" style="display:none"></div>
     <div class="card" style="max-width:760px;">
@@ -27,7 +27,7 @@
         <span class="badge badge-info">Roll number auto assigned after saving</span>
       </div>
       <div class="card-body">
-        <form id="addForm" action="/SMS/StudentServlet" method="POST" novalidate>
+        <form id="addForm" action="/StudentServlet" method="POST" novalidate>
           <input type="hidden" name="action" value="add">
           <div class="form-grid-2">
             <div class="form-group">
@@ -66,7 +66,7 @@
           </div>
           <div class="d-flex gap-2 mt-4">
             <button type="submit" class="btn btn-primary">Add Student</button>
-            <a href="/SMS/StudentServlet" class="btn btn-outline">Cancel</a>
+            <a href="/StudentServlet" class="btn btn-outline">Cancel</a>
           </div>
         </form>
       </div>
