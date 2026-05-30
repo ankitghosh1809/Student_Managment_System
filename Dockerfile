@@ -6,12 +6,15 @@ FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
 COPY SMS/ .
 
-# Download BCrypt JAR (missing from WEB-INF/lib but required by AdminDAO & StudentDAO)
+# Download PostgreSQL JDBC driver and BCrypt JAR
 RUN apt-get update -qq && apt-get install -y -qq wget && \
+    wget -q "https://jdbc.postgresql.org/download/postgresql-42.7.3.jar" \
+         -O webapp/WEB-INF/lib/postgresql-42.7.3.jar && \
     wget -q "https://repo1.maven.org/maven2/org/mindrot/jbcrypt/0.4/jbcrypt-0.4.jar" \
-         -O webapp/WEB-INF/lib/jbcrypt-0.4.jar
+         -O webapp/WEB-INF/lib/jbcrypt-0.4.jar && \
+    rm -f webapp/WEB-INF/lib/mysql-connector-j-*.jar
 
-# Wipe stale .class files, recompile everything from source
+# Recompile everything from source
 RUN rm -rf webapp/WEB-INF/classes/com && \
     find src -name "*.java" > sources.txt && \
     javac -source 17 -target 17 \
@@ -24,9 +27,9 @@ RUN rm -rf webapp/WEB-INF/classes/com && \
 # ─────────────────────────────────────────────
 FROM tomcat:10.1-jdk17
 
-# Install MySQL client so entrypoint.sh can wait-for + init the DB
+# Install PostgreSQL client so entrypoint.sh can wait-for + init the DB
 RUN apt-get update -qq && \
-    apt-get install -y -qq default-mysql-client && \
+    apt-get install -y -qq postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
 # Deploy webapp as ROOT (app lives at / instead of /sms)

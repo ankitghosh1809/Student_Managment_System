@@ -9,9 +9,8 @@ import java.util.Properties;
 
 /**
  * Resolves DB credentials in priority order:
- *   1. DB_URL + DB_USER + DB_PASS  (explicit, works on any cloud)
- *   2. MYSQLHOST + MYSQLPORT + MYSQLDATABASE + MYSQLUSER + MYSQLPASSWORD
- *      (auto-injected by Railway's MySQL plugin)
+ *   1. DATABASE_URL  (full JDBC URL — recommended for Neon/Koyeb)
+ *   2. DB_URL + DB_USER + DB_PASS  (explicit separate vars)
  *   3. Properties file at $SMS_DB_CONFIG or ~/sms-config/db.properties
  *      (local development fallback)
  */
@@ -23,27 +22,25 @@ public class DBConnection {
 
     static {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("org.postgresql.Driver");
 
-            // ── Option 1: explicit env vars ──────────────────────────────────
-            String dbUrl  = System.getenv("DB_URL");
-            String dbUser = System.getenv("DB_USER");
-            String dbPass = System.getenv("DB_PASS");
+            // ── Option 1: full Neon connection string (DATABASE_URL) ─────────
+            String databaseUrl = System.getenv("DATABASE_URL");
+            if (databaseUrl != null) {
+                // Neon provides: postgresql://user:pass@host/db?sslmode=require
+                // Convert to JDBC format if needed
+                if (databaseUrl.startsWith("postgresql://")) {
+                    databaseUrl = "jdbc:" + databaseUrl;
+                }
+                URL  = databaseUrl;
+                USER = "";
+                PASS = "";
 
-            if (dbUrl != null) {
-                URL  = dbUrl;
-                USER = dbUser != null ? dbUser : "";
-                PASS = dbPass != null ? dbPass : "";
-
-            // ── Option 2: Railway MySQL plugin vars ──────────────────────────
-            } else if (System.getenv("MYSQLHOST") != null) {
-                String host = System.getenv("MYSQLHOST");
-                String port = System.getenv("MYSQLPORT");
-                String db   = System.getenv("MYSQLDATABASE");
-                URL  = "jdbc:mysql://" + host + ":" + port + "/" + db
-                     + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-                USER = System.getenv("MYSQLUSER");
-                PASS = System.getenv("MYSQLPASSWORD");
+            // ── Option 2: explicit env vars ──────────────────────────────────
+            } else if (System.getenv("DB_URL") != null) {
+                URL  = System.getenv("DB_URL");
+                USER = System.getenv("DB_USER") != null ? System.getenv("DB_USER") : "";
+                PASS = System.getenv("DB_PASS") != null ? System.getenv("DB_PASS") : "";
 
             // ── Option 3: local properties file (dev) ────────────────────────
             } else {
@@ -65,6 +62,10 @@ public class DBConnection {
     private DBConnection() {}
 
     public static Connection getConnection() throws SQLException {
+        if (USER == null || USER.isEmpty()) {
+            // DATABASE_URL already contains credentials
+            return DriverManager.getConnection(URL);
+        }
         return DriverManager.getConnection(URL, USER, PASS);
     }
 
