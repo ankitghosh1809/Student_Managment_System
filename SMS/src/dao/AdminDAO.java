@@ -13,15 +13,12 @@ public class AdminDAO implements GenericDAO<Admin> {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     String stored = rs.getString("password");
-                    System.out.println("[AdminDAO] Found user: " + username);
-                    if (BCrypt.checkpw(password, stored)) {
-                        System.out.println("[AdminDAO] Login successful for: " + username);
-                        return map(rs);
-                    } else {
-                        System.out.println("[AdminDAO] Password mismatch for: " + username);
-                    }
+                    System.out.println("[AdminDAO] User found: " + username);
+                    boolean ok = BCrypt.checkpw(password, stored);
+                    System.out.println("[AdminDAO] Password match: " + ok);
+                    if (ok) return map(rs);
                 } else {
-                    System.out.println("[AdminDAO] No user found with username: " + username);
+                    System.out.println("[AdminDAO] No user found: " + username);
                 }
             }
         } catch (Exception e) {
@@ -40,7 +37,7 @@ public class AdminDAO implements GenericDAO<Admin> {
         Admin a = new Admin();
         a.setId(rs.getInt("id"));
         a.setUsername(rs.getString("username"));
-        a.setFullName(rs.getString("fullname"));
+        a.setFullName(rs.getString("fullname")); // PostgreSQL lowercases column names
         return a;
     }
 }
