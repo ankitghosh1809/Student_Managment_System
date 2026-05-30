@@ -6,7 +6,8 @@ FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
 COPY SMS/ .
 
-# Download PostgreSQL JDBC driver and BCrypt JAR
+# Force cache bust + download PostgreSQL JDBC driver
+ARG CACHEBUST=4
 RUN apt-get update -qq && apt-get install -y -qq wget && \
     wget -q "https://jdbc.postgresql.org/download/postgresql-42.7.3.jar" \
          -O webapp/WEB-INF/lib/postgresql-42.7.3.jar && \
@@ -14,25 +15,24 @@ RUN apt-get update -qq && apt-get install -y -qq wget && \
          -O webapp/WEB-INF/lib/jbcrypt-0.4.jar && \
     rm -f webapp/WEB-INF/lib/mysql-connector-j-*.jar
 
-# Recompile everything from source
+# Recompile everything fresh from source
 RUN rm -rf webapp/WEB-INF/classes/com && \
     find src -name "*.java" > sources.txt && \
     javac -source 17 -target 17 \
           -cp "webapp/WEB-INF/lib/*" \
           -d webapp/WEB-INF/classes \
-          @sources.txt
+          @sources.txt && \
+    echo "Compiled classes:" && find webapp/WEB-INF/classes -name "*.class" | wc -l
 
 # ─────────────────────────────────────────────
-#  Stage 2 – Tomcat 10.1 runtime (Jakarta EE 10)
+#  Stage 2 – Tomcat 10.1 runtime
 # ─────────────────────────────────────────────
 FROM tomcat:10.1-jdk17
 
-# Install PostgreSQL client so entrypoint.sh can wait-for + init the DB
 RUN apt-get update -qq && \
     apt-get install -y -qq postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
-# Deploy webapp as ROOT (app lives at / instead of /sms)
 RUN rm -rf $CATALINA_HOME/webapps/ROOT
 
 COPY --from=build /app/webapp          $CATALINA_HOME/webapps/ROOT
