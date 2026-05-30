@@ -4,21 +4,43 @@ import java.util.Properties;
 
 public class DBConnection {
     private static final String JDBC_URL;
+    private static final String DB_USER;
+    private static final String DB_PASS;
 
     static {
         String raw = System.getenv("DATABASE_URL");
         System.out.println("[DBConnection] DATABASE_URL set: " + (raw != null));
         if (raw == null) throw new RuntimeException("DATABASE_URL env var is missing");
-        // Neon/Render give "postgres://" or "postgresql://" — JDBC needs "jdbc:postgresql://"
-        if (raw.startsWith("postgres://")) {
-            raw = "jdbc:postgresql://" + raw.substring("postgres://".length());
-        } else if (raw.startsWith("postgresql://")) {
-            raw = "jdbc:postgresql://" + raw.substring("postgresql://".length());
+
+        String user = null, pass = null, url = raw;
+
+        if (raw.startsWith("postgres://") || raw.startsWith("postgresql://")) {
+            String noScheme = raw.startsWith("postgres://")
+                ? raw.substring("postgres://".length())
+                : raw.substring("postgresql://".length());
+            int atIdx = noScheme.lastIndexOf('@');
+            if (atIdx >= 0) {
+                String userInfo = noScheme.substring(0, atIdx);
+                String hostRest = noScheme.substring(atIdx + 1);
+                int colonIdx = userInfo.indexOf(':');
+                if (colonIdx >= 0) {
+                    user = userInfo.substring(0, colonIdx);
+                    pass = userInfo.substring(colonIdx + 1);
+                } else {
+                    user = userInfo;
+                }
+                url = "jdbc:postgresql://" + hostRest;
+            } else {
+                url = "jdbc:postgresql://" + noScheme;
+            }
         } else if (!raw.startsWith("jdbc:")) {
-            raw = "jdbc:" + raw;
+            url = "jdbc:" + raw;
         }
-        JDBC_URL = raw;
-        System.out.println("[DBConnection] URL prefix: " + JDBC_URL.substring(0, Math.min(45, JDBC_URL.length())));
+
+        JDBC_URL = url;
+        DB_USER = user;
+        DB_PASS = pass;
+        System.out.println("[DBConnection] URL prefix: " + JDBC_URL.substring(0, Math.min(50, JDBC_URL.length())));
         try { Class.forName("org.postgresql.Driver"); }
         catch (ClassNotFoundException e) { throw new RuntimeException("PostgreSQL driver not found", e); }
     }
@@ -27,6 +49,8 @@ public class DBConnection {
 
     public static Connection getConnection() throws SQLException {
         Properties p = new Properties();
+        if (DB_USER != null) p.setProperty("user", DB_USER);
+        if (DB_PASS != null) p.setProperty("password", DB_PASS);
         p.setProperty("ssl", "true");
         p.setProperty("sslmode", "require");
         try {
