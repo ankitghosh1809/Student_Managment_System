@@ -7,7 +7,7 @@ WORKDIR /app
 COPY SMS/ .
 
 # Force cache bust + download PostgreSQL JDBC driver
-ARG CACHEBUST=4
+ARG CACHEBUST=5
 RUN apt-get update -qq && apt-get install -y -qq wget && \
     wget -q "https://jdbc.postgresql.org/download/postgresql-42.7.3.jar" \
          -O webapp/WEB-INF/lib/postgresql-42.7.3.jar && \
